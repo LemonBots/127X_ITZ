@@ -1,4 +1,5 @@
 #include "main.h"
+#include "motors.h"
 
 void operatorControl() {
 	while (1) {
