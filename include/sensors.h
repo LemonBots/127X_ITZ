@@ -12,8 +12,8 @@
 //Main Lift Potentiometer (analog)
 #define mainLiftPot 1
 
-//Mogo Lift Potentiometer (analog)
-#define mogoLiftPot 2
+//Mogo Lift Limit Switch (analog)
+#define mogoLiftSwitch 2
 
 //Drive Gyroscope
 
