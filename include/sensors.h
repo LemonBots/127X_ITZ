@@ -19,4 +19,8 @@
 
 #define gyroscope 3
 
+//LCD screen
+
+#define lcdScreen 1
+
 #endif
