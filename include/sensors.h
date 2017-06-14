@@ -21,6 +21,6 @@
 
 //LCD screen
 
-#define lcdScreen 1
+#define lcdScreen uart1
 
 #endif
