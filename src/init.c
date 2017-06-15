@@ -22,6 +22,7 @@ void autonSelect(){
 
   if((autonMode !=0) && (lcdReadButtons(lcdScreen) == 2)){ //If auton is selected and button is pressed
     autonMode = 0; //Un-select autonomous
+    delay(300);
   }
 
   if((autonMode = 0) && lcdReadButtons(lcdScreen) == 1){ //If left button is pressed and auton is not selected
@@ -41,6 +42,7 @@ void autonSelect(){
 
   if (lcdReadButtons(lcdScreen) == 2){ //If middle button is pressed, select corresponding autonomous routine
     autonMode = lcdPageNumber;
+    delay(300);
   }
 
   switch(lcdPageNumber){  //Determines what to display on screen based on which page number
