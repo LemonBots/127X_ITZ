@@ -1,29 +1,71 @@
 #include "main.h"
 #include "sensors.h"
 
-/*
- * Runs pre-initialization code. This function will be started in kernel mode one time while the
- * VEX Cortex is starting up. As the scheduler is still paused, most API functions will fail.
- *
- * The purpose of this function is solely to set the default pin modes (pinMode()) and port
- * states (digitalWrite()) of limit switches, push buttons, and solenoids. It can also safely
- * configure a UART port (usartOpen()) but cannot set up an LCD (lcdInit()).
- */
+#define mainPage 1 //Front page of LCD screen
+#define maxPages 8 //Highest page number
+
 void initializeIO() {
 }
 
-/*
- * Runs user initialization code. This function will be started in its own task with the default
- * priority and stack size once when the robot is starting up. It is possible that the VEXnet
- * communication link may not be fully established at this time, so reading from the VEX
- * Joystick may fail.
- *
- * This function should initialize most sensors (gyro, encoders, ultrasonics), LCDs, global
- * variables, and IMEs.
- *
- * This function must exit relatively promptly, or the operatorControl() and autonomous() tasks
- * will not start. An autonomous mode selection menu like the pre_auton() in other environments
- * can be implemented in this task if desired.
- */
+int lcdPageNumber = mainPage;
+int autonMode = 0;
+
+void autonSelect(){
+  if(autonMode != 0){ //If no auton is selected...
+    lcdPrint(lcdScreen, 2, "Auton Selected!"); //Confirmation for selected auton
+  } else {
+    lcdPrint(lcdScreen, 2, "^"); //Point to line above
+  }
+
+  if((autonMode !=0) && (lcdReadButtons(lcdScreen) == 2)){ //If auton is selected and button is pressed
+    autonMode = 0; //Un-select autonomous
+  }
+
+  if((autonMode = 0) && lcdReadButtons(lcdScreen) == 1){ //If left button is pressed and auton is not selected
+    lcdPageNumber -= 1; //Decrease page number
+    delay(300);
+  }
+  if((autonMode = 0) && lcdReadButtons(lcdScreen) == 4){ //If right button is pressed and auton is not selected
+    lcdPageNumber += 1; //Increase page number
+    delay(300);
+  }
+  if (lcdPageNumber > maxPages){ //Cycle to beginning from end
+    lcdPageNumber = mainPage;
+  }
+  if(lcdPageNumber < mainPage){ //Cycle to end from beginning
+    lcdPageNumber = maxPages;
+  }
+
+  if (lcdReadButtons(lcdScreen) == 2){ //If middle button is pressed, select corresponding autonomous routine
+    autonMode = lcdPageNumber;
+  }
+
+  switch(lcdPageNumber){  //Determines what to display on screen based on which page number
+    case '1' :
+    lcdPrint(lcdScreen, 1, "First Routine");
+    case '2' :
+    lcdPrint(lcdScreen, 1, "Second Routine");
+    case '3' :
+    lcdPrint(lcdScreen, 1, "Third Routine");
+    case '4' :
+    lcdPrint(lcdScreen, 1, "Fourth Routine");
+    case '5' :
+    lcdPrint(lcdScreen, 1, "Fifth Routine");
+    case '6' :
+    lcdPrint(lcdScreen, 1, "Sixth Routine");
+    case '7' :
+    lcdPrint(lcdScreen, 1, "Seventh Routine");
+    case '8' :
+    lcdPrint(lcdScreen, 1, "Eighth Routine");
+
+  }
+
+}
+
 void initialize() {
+  lcdInit(lcdScreen);
+  lcdClear(lcdScreen);
+  lcdSetBacklight(lcdScreen, true);
+
+  autonSelect();
 }
