@@ -9,12 +9,15 @@ void initializeIO() {
 
 int lcdPageNumber = mainPage;
 int autonMode = 0;
+double batteryVoltage;
 
 void autonSelect(){
-  if(autonMode != 0){ //If no auton is selected...
+  batteryVoltage = powerLevelMain() / 10;
+
+  if(autonMode == 0){ //If auton is selected...
+    lcdPrint(lcdScreen, 2, "Battery: %f", batteryVoltage); //Display battery percentage
+  } else { //If no auton is selected...
     lcdPrint(lcdScreen, 2, "Auton Selected!"); //Confirmation for selected auton
-  } else {
-    lcdPrint(lcdScreen, 2, "^"); //Point to line above
   }
 
   if((autonMode !=0) && (lcdReadButtons(lcdScreen) == 2)){ //If auton is selected and button is pressed
@@ -57,7 +60,6 @@ void autonSelect(){
     lcdPrint(lcdScreen, 1, "Seventh Routine");
     case '8' :
     lcdPrint(lcdScreen, 1, "Eighth Routine");
-
   }
 
 }
@@ -66,6 +68,7 @@ void initialize() {
   lcdInit(lcdScreen);
   lcdClear(lcdScreen);
   lcdSetBacklight(lcdScreen, true);
-
+while(1){
   autonSelect();
+  }
 }
