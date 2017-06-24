@@ -13,11 +13,11 @@
 //Main Lift Motors
 #define mainLift 5
 
-//Mobile Goal Lift Motors
+//Mobile Goal Lift Motor
 #define mogoLift 6
 
-//Shifter Motor
-#define shifter 2
+//Shifter (or Chain Bar) Motors
+#define chainbar 2
 
 //Abductor Motor
 #define  abductor 9
