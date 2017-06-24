@@ -12,8 +12,11 @@
 //Main Lift Potentiometer (analog)
 #define mainLiftPot 1
 
+//Shifter Potentiometer
+#define shifterPot 2
+
 //Mogo Lift Limit Switch (analog)
-#define mogoLiftSwitch 2
+#define mogoLiftSwitch 3
 
 //Drive Gyroscope
 
@@ -22,5 +25,18 @@
 //LCD screen
 
 #define lcdScreen uart1
+
+//PD structs
+
+typedef struct NAME{
+  double Kp; //Constant for proportional value
+  double Kd; //Constant for derivative value
+  double error;  //Distance between target and sensor value
+  double previous_error;  //Last error value given
+  double derivative;  //error - previous_error
+  int target;  //Target value
+  int sensor;  //Sensor value
+  int motorvalue; //Ultimate output
+}PD;
 
 #endif
