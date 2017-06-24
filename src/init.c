@@ -47,21 +47,21 @@ void autonSelect(){
     }
 
     switch(lcdPageNumber){  //Determines what to display on screen based on which page number
-      case '1' :
+      case 1 :
       lcdPrint(lcdScreen, 1, "First Routine");
-      case '2' :
+      case 2 :
       lcdPrint(lcdScreen, 1, "Second Routine");
-      case '3' :
+      case 3 :
       lcdPrint(lcdScreen, 1, "Third Routine");
-      case '4' :
+      case 4 :
       lcdPrint(lcdScreen, 1, "Fourth Routine");
-      case '5' :
+      case 5 :
       lcdPrint(lcdScreen, 1, "Fifth Routine");
-      case '6' :
+      case 6 :
       lcdPrint(lcdScreen, 1, "Sixth Routine");
-      case '7' :
+      case 7 :
       lcdPrint(lcdScreen, 1, "Seventh Routine");
-      case '8' :
+      case 8 :
       lcdPrint(lcdScreen, 1, "Eighth Routine");
     }
   }
