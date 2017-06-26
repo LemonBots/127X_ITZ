@@ -3,28 +3,28 @@
 #define SENSORS_H_
 
 //Drive Quadrature Encoders (digital)
-#define leftDriveQuadTop 1
-#define leftDriveQuadBottom 2
+#define LEFTDRIVETOP 1
+#define LEFTDRIVEBOTTOM 2
 
-#define rightDriveQuadTop 3
-#define rightDriveQuadBottom 4
+#define RIGHTDRIVETOP 3
+#define RIGHTDRIVEBOTTOM 4
+
+//Mogo Lift Limit Switch (digital)
+#define MOGOLIMITSWITCH 5
 
 //Main Lift Potentiometer (analog)
-#define mainLiftPot 1
+#define MAINLIFTPOT 1
 
-//Shifter Potentiometer
-#define shifterPot 2
+//Shifter Potentiometer (analog)
+#define SHIFTERPOT 2
 
-//Mogo Lift Limit Switch (analog)
-#define mogoLiftSwitch 3
+//Drive Gyroscope (analog)
 
-//Drive Gyroscope
-
-#define gyroscope 3
+#define GYROSCOPE 3
 
 //LCD screen
 
-#define lcdScreen uart1
+#define LCDSCREEN uart1
 
 //PD structs
 
@@ -38,5 +38,21 @@ typedef struct NAME{
   int sensor;  //Sensor value
   int motorvalue; //Ultimate output
 }PD;
+
+#define GROUND_CONE 2000 //Appropriate lift height for a ground cone
+
+#define LOADER_CONE 2000 //Appropriate lift height for a loader cone
+
+#define ANGLE_BOTTOM 2000//Angle where shifter is ready to pick up
+
+#define STACK_ANGLE 2000 //Angle where cone is directly above stack
+
+#define MIDDLE_ANGLE 2000 //Angle where cone is right above robot, waiting to stack
+
+#define CLEARANCE_ANGLE_BOTTOM 2000 //Angle that shifter has to get to before
+                          //it is clear to go up
+
+#define CLEARANCE_ANGLE_TOP 2000 //Angle that shifter has to get to before
+                          //it is clear to go back down
 
 #endif
