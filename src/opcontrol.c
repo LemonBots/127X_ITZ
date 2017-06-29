@@ -18,141 +18,148 @@ bool pickupMode = 0;  //0 indicates picking up from ground
 										//Accepts partner controller input
 
 PD lift = {  //Sets values for lift PD
-	.Kp = 0.1, .Kd = 0.02, .error = 0, .previous_error = 0, .derivative = 0,
-	.target = 1500, .sensor = 0, .motorvalue = 0
+	.Kp = 0.2, .Kd = 0.00, .error = 0, .previous_error = 0, .derivative = 0,
+	.target = GROUND_CONE, .sensor = 0, .motorvalue = 0
 };
 
 PD shifter = {  //Sets values for shifter PD
-	.Kp = 0.1, .Kd = 0.02, .error = 0, .previous_error = 0, .derivative = 0,
-	.target = 1500, .sensor = 0, .motorvalue = 0
+	.Kp = 0.2, .Kd = 0.05, .error = 0, .previous_error = 0, .derivative = 0,
+	.target = ANGLE_BOTTOM, .sensor = 0, .motorvalue = 0
 };
 
 
 void liftHeight(void * parameter){  //liftHeight managing task
-	while(1){
+	while(1){  //Standard PD control loop
 		lift.sensor = analogRead(MAINLIFTPOT);
 		lift.previous_error = lift.error;
 		lift.error = lift.sensor - lift.target;
+		lift.derivative = lift.previous_error - lift.error;
 
 		lift.motorvalue = lift.Kp * lift.error + lift.Kd * lift.derivative;
 
 		motorSet(MAINLIFT, lift.motorvalue);
 
+		lcdPrint(LCDSCREEN, 1, "Target: %d", lift.target);
 		lcdPrint(LCDSCREEN, 2, "Lift: %d", lift.sensor);
 		delay(20); //Don't hog CPU!
 	}
 }
 
 void shifterAngle(void * parameter){  //liftHeight managing task
-	while(1){
+	while(1){  //Standard PD control loop
 		shifter.sensor = analogRead(SHIFTERPOT);
 		shifter.previous_error = shifter.error;
 		shifter.error = shifter.sensor - shifter.target;
+		shifter.derivative = shifter.previous_error - shifter.error;
 
 		shifter.motorvalue = shifter.Kp * shifter.error + shifter.Kd * shifter.derivative;
 
 		motorSet(CHAINBAR, shifter.motorvalue);
 
-		lcdPrint(LCDSCREEN, 1, "Arm: %d", shifter.target);
 		delay(20);
 	}
 }
 
-int stackedCones = 0;
-
+uint8_t stackedCones = 1; //Cones stacked on currently-selected mobile goal
+uint8_t stationaryCones = 0; //Cones stacked on stationary goal (only incremented)
+														//in stationary goal mode)
 void liftManager(void * parameter){
-	while (scoringMode == 0) { //If in standard mogo mode
-
-		if(liftPlan == 0){ //If picking up cones from ground
-			lift.target = GROUND_CONE;  //Ground cone height
-		}
-		if(liftPlan == 1){ //If picking up cones from autoloader
-			lift.target = LOADER_CONE;  //Autoloader height
-		}
-
-		if(liftPlan == 2){  //if plan is to stack
-			switch(stackedCones){		//Library for mogo stack heights
-				case 1 :							//1 cone is stacked...
-				lift.target = 2000;		//...this is correct height.
-				case 2 :							//2 cones are stacked...
-				lift.target = 2000;		//etc.
-				case 3 :
-				lift.target = 2000;
-				case 4 :
-				lift.target = 2000;
-				case 5 :
-				lift.target = 2000;
-				case 6 :
-				lift.target = 2000;
-				case 7 :
-				lift.target = 2000;
-				case 8 :
-				lift.target = 2000;
-				case 9 :
-				lift.target = 2000;
-				case 10 :
-				lift.target = 2000;
-				case 11 :
-				lift.target = 2000;
-				case 12 :
-				lift.target = 2000;
-				case 13 :
-				lift.target = 2000;
-				case 14 :
-				lift.target = 2000;
-				case 15 :
-				lift.target = 2000;
-				case 16 :
-				lift.target = 2000;
-				case 17 :
-				lift.target = 2000;
-				case 18 :
-				lift.target = 2000;
+	while(1){
+		while (scoringMode == 0) { //If in standard mogo mode
+			printf("Mode: %d \n", scoringMode);
+			printf("Cones: %d", stackedCones);
+			if(liftPlan == 0){ //If picking up cones from ground
+				lift.target = GROUND_CONE;  //Ground cone height
 			}
-		}
-		delay(20);
-	}
-
-
-	while(scoringMode == 1){ //If in stationary goal mode
-
-		if(liftPlan == 0){ //If picking up cones from ground
-			lift.target = GROUND_CONE;  //Ground cone height
-		}
-		if(liftPlan == 1){ //If picking up cones from autoloader
-			lift.target = LOADER_CONE;  //Autoloader height
-		}
-
-		if(liftPlan == 2){  //If plan is to stack
-			switch(stackedCones){		//Library for stationary stack heights
-				case 1 :							//1 cone is stacked...
-				lift.target = 2000;		//...this is correct height.
-				case 2 :							//2 cones are stacked...
-				lift.target = 2000;		//etc.
-				case 3 :
-				lift.target = 2000;
-				case 4 :
-				lift.target = 2000;
-				case 5 :
-				lift.target = 2000;
-				case 6 :
-				lift.target = 2000;
-				case 7 :
-				lift.target = 2000;
-				case 8 :
-				lift.target = 2000;
-				case 9 :
-				lift.target = 2000;
-				case 10 :
-				lift.target = 2000;
-				case 11 :
-				lift.target = 2000;
-				case 12 :
-				lift.target = 2000;
+			if(liftPlan == 1){ //If picking up cones from autoloader
+				lift.target = LOADER_CONE;  //Autoloader height
 			}
+
+			if(liftPlan == 2){  //if plan is to stack
+				switch(stackedCones){		//Library for mogo stack heights
+					case 1 :							//1 cone is stacked...
+					lift.target = 4000;		//...this is correct height.
+					case 2 :							//2 cones are stacked...
+					lift.target = 2220;		//etc.
+					case 3 :
+					lift.target = 2360;
+					case 4 :
+					lift.target = 2500;
+					case 5 :
+					lift.target = 2700;
+					case 6 :
+					lift.target = 2900;
+					case 7 :
+					lift.target = 3100;
+					case 8 :
+					lift.target = 3300;
+					case 9 :
+					lift.target = 3500;
+					case 10 :
+					lift.target = 3700;
+					case 11 :
+					lift.target = 2000;
+					case 12 :
+					lift.target = 2000;
+					case 13 :
+					lift.target = 2000;
+					case 14 :
+					lift.target = 2000;
+					case 15 :
+					lift.target = 2000;
+					case 16 :
+					lift.target = 2000;
+					case 17 :
+					lift.target = 2000;
+					case 18 :
+					lift.target = 2000;
+				}
+			}
+			delay(20);
+		}
+
+
+		while(scoringMode == 1){ //If in stationary goal mode
+			printf("Mode: %d \n", scoringMode);
+			printf("Cones: %d", stackedCones);
+			if(liftPlan == 0){ //If picking up cones from ground
+				lift.target = GROUND_CONE;  //Ground cone height
+			}
+			if(liftPlan == 1){ //If picking up cones from autoloader
+				lift.target = LOADER_CONE;  //Autoloader height
+			}
+
+			if(liftPlan == 2){  //If plan is to stack
+				switch(stackedCones){		//Library for stationary stack heights
+					case 1 :							//1 cone is stacked...
+					lift.target = 3000;		//...this is correct height.
+					case 2 :							//2 cones are stacked...
+					lift.target = 3000;		//etc.
+					case 3 :
+					lift.target = 3000;
+					case 4 :
+					lift.target = 3000;
+					case 5 :
+					lift.target = 2000;
+					case 6 :
+					lift.target = 2000;
+					case 7 :
+					lift.target = 2000;
+					case 8 :
+					lift.target = 2000;
+					case 9 :
+					lift.target = 2000;
+					case 10 :
+					lift.target = 2000;
+					case 11 :
+					lift.target = 2000;
+					case 12 :
+					lift.target = 2000;
+				}
+			}
+			delay(20);
 		}
 	}
-	delay(20);
 }
 
 void partnerController(void * parameter) {
@@ -161,13 +168,10 @@ void partnerController(void * parameter) {
 			scoringMode = 0;
 			stackedCones = 0;
 			delay(300);
-		}
-		if (joystickGetDigital(2, 7, JOY_DOWN)){ //Sets to stationary goal mode
+		} else if (joystickGetDigital(2, 7, JOY_DOWN)){ //Sets to stationary goal mode
 			scoringMode = 1;
-			stackedCones = 0;
 			delay(300);
-		}
-		if (joystickGetDigital(2, 7, JOY_LEFT)){ //Sets to manual control
+		} else if (joystickGetDigital(2, 7, JOY_LEFT)){ //Sets to manual control
 			scoringMode = 2;
 			delay(300);
 		}
@@ -176,26 +180,42 @@ void partnerController(void * parameter) {
 		if (joystickGetDigital(2, 8, JOY_UP)){ //Sets to autoloader pickup
 			pickupMode = 0;
 			delay(300);
-		}
-		if (joystickGetDigital(2, 8, JOY_DOWN)){ //Sets to ground pickup
+		} else if (joystickGetDigital(2, 8, JOY_DOWN)){ //Sets to ground pickup
 			pickupMode = 1;
 			delay(300);
 		}
 
-		if(joystickGetDigital(2, 6, JOY_UP)){
+		if(joystickGetDigital(2, 6, JOY_UP)){  //Increments cone counts
+			if(scoringMode == 0){					//depending on scoringMode
 			stackedCones += 1;
+			}	else if (scoringMode ==1){
+				stationaryCones += 1;
+			}
 			delay(300);
 		}
-		if(joystickGetDigital(2, 6, JOY_DOWN)){
+		if(joystickGetDigital(2, 6, JOY_DOWN)){  //Decrements cone counts
+			if(scoringMode == 0){					//depending on scoringMode
 			stackedCones -= 1;
+			}	else if (scoringMode ==1){
+				stationaryCones -= 1;
+			}
+			delay(300);
 		}
 
 		if(joystickGetDigital(2, 5, JOY_DOWN)){ //Sets stacked cone number to 5
-			stackedCones = 5;
+			if(scoringMode == 0){
+			stackedCones = 5;  //Change mogo cones count to 5
+			} else if (scoringMode == 1){
+				stationaryCones = 5;  //Change statgo cones count to 10
+			}
 			delay(300);
 		}
 		if(joystickGetDigital(2, 5, JOY_UP)){ //Sets stacked cone number to 10
-			stackedCones = 10;
+			if(scoringMode == 0){
+			stackedCones = 10;  //Change mogo cones count to 10
+		} else if (scoringMode == 1){
+			stationaryCones = 10;  //Change statgo cones count to 10
+		}
 			delay(300);
 		}
 
@@ -217,18 +237,19 @@ int8_t rightDrivePower;
 void driveTask(void * parameter){
 	while(1){
 		rightDrivePower = deadband(joystickGetAnalog(1, 2));
-		motorSet(DRIVERIGHT1, rightDrivePower);
-		motorSet(DRIVERIGHT2, rightDrivePower);
+		motorSet(DRIVERIGHT1, -rightDrivePower);
+		motorSet(DRIVERIGHT2, -rightDrivePower);
 
 		leftDrivePower = deadband(joystickGetAnalog(1, 3));
-		motorSet(DRIVELEFT1, leftDrivePower);
-		motorSet(DRIVELEFT2, leftDrivePower);
+		motorSet(DRIVELEFT1, -leftDrivePower);
+		motorSet(DRIVELEFT2, -leftDrivePower);
 
-		if (joystickGetDigital(1, 5, JOY_UP) && analogRead(MOGOLIMITSWITCH == 0)){
+		if (joystickGetDigital(1, 5, JOY_UP) && analogRead(MOGOLIMITSWITCH == 1)){
+																						//Switch is not pressed
 			motorSet(MOGOLIFT, -127);  //raise lift
 		} else if (joystickGetDigital(1, 5, JOY_DOWN)){
 			motorSet(MOGOLIFT, 127);  //Lower lift
-		} else if (analogRead(MOGOLIMITSWITCH)){
+		} else if (analogRead(MOGOLIMITSWITCH == 0)){  //Switch is pressed
 			motorSet(MOGOLIFT, -15); //Passive power
 		} else {
 			motorSet(MOGOLIFT, 0);
@@ -243,14 +264,14 @@ void operatorControl() {
             	TASK_DEFAULT_STACK_SIZE,
             	NULL,
           		TASK_PRIORITY_DEFAULT);
-	taskCreate(shifterAngle,  //Creates task to manage lift height
+	taskCreate(shifterAngle,  //Creates task to manage shifter angle
 						 	TASK_DEFAULT_STACK_SIZE,
 						 	NULL,
 						 	TASK_PRIORITY_DEFAULT);
 	taskCreate(liftManager,  //Creates task to manage lift target height
 							TASK_DEFAULT_STACK_SIZE,
 							NULL,
-							TASK_PRIORITY_LOWEST);
+							TASK_PRIORITY_DEFAULT);
 	taskCreate(partnerController,  //Creates task to take input from partner controller
 							TASK_DEFAULT_STACK_SIZE,
 							NULL,
@@ -273,6 +294,7 @@ void operatorControl() {
 						delay(40);
 					}
 					liftPlan = 2;  //Lift up
+					delay(200);
 					while (lift.sensor < lift.target - 100){ //Wait until cone is high enough
 						delay(40);
 					}
@@ -284,17 +306,27 @@ void operatorControl() {
 					motorSet(ABDUCTOR, -127); //Open claw
 					delay(200);
 					motorSet(ABDUCTOR, 0); //Turns off motor
-					shifter.target = ANGLE_BOTTOM; //Move claw to grabbing height
+					delay(50);
+					motorSet(ABDUCTOR, 127);  //Close claw again to move
+					delay(250);
+					shifter.target = ANGLE_BOTTOM; //Move shifter to grabbing height
 					while(shifter.sensor > CLEARANCE_ANGLE_TOP){ //Wait until chainbar is
 						delay(40); 																//away to go down
 					}
-					if (pickupMode == 0){
-						liftPlan = 0;
-					} else if (pickupMode ==1){
-						liftPlan = 1;
+					motorSet(ABDUCTOR, 0);
+					if (pickupMode == 0){  //If picking up from ground,
+						liftPlan = 0;				//go to ground
+					} else if (pickupMode == 1){  //If picking up from autoloader,
+						liftPlan = 1;				//go to autoloader
 					}
+					while(shifter.sensor - 50 > shifter.target){  //Wait until shifter is
+						delay(40);																	//close enough
+					}
+					motorSet(ABDUCTOR, -127); //Open claw
+					delay(200);
+					motorSet(ABDUCTOR, 0);
 				}
-				break; //Breaks while loop without manual cancel
+				delay(20);
 			}
 		}
 
@@ -323,16 +355,23 @@ void operatorControl() {
 					delay(200);
 					motorSet(ABDUCTOR, 0); //Turns off motor
 					shifter.target = ANGLE_BOTTOM; //Move claw to grabbing height
+					delay(50);
+					motorSet(ABDUCTOR, 127);
+					delay(200);
+					motorSet(ABDUCTOR, 0);
 					while(shifter.sensor > CLEARANCE_ANGLE_TOP){ //Wait until chainbar is
 						delay(40); 																//away to go down
 					}
-					if (pickupMode == 0){
-						liftPlan = 0;
-					} else if (pickupMode ==1){
-						liftPlan = 1;
+					if (pickupMode == 0){  //If picking up from ground,
+						liftPlan = 0;				//go to ground
+					} else if (pickupMode ==1){ //If picking up from autoloader,
+						liftPlan = 1;				//go to autoloader
 					}
+					motorSet(ABDUCTOR, -127); //Open claw
+					delay(200);
+					motorSet(ABDUCTOR, 0);
 				}
-				break;  //Breaks while loop without manual cancel
+				delay(20);
 			}
 		}
 
