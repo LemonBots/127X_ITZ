@@ -71,6 +71,7 @@ void initialize() {
 
   analogCalibrate(MAINLIFTPOT); //Initializes analog sensors
   analogCalibrate(SHIFTERPOT);
+  analogCalibrate(MOGOLIMITSWITCH);
   analogCalibrate(GYROSCOPE);
 
   encoderInit(LEFTDRIVETOP, LEFTDRIVEBOTTOM, false);  //Initializes quad encoders
