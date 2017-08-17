@@ -39,21 +39,21 @@ typedef struct NAME{
   int motorvalue; //Ultimate output
 }PD;
 
-#define GROUND_CONE 1900 //Appropriate lift height for a ground cone
+#define GROUND_CONE 1890 //Appropriate lift height for a ground cone
                           //Technically 1900, but this gives passive downward power
 
 #define LOADER_CONE 2500 //Appropriate lift height for a loader cone
 
-#define ANGLE_BOTTOM 220 //Angle where shifter is ready to pick up
+#define ANGLE_BOTTOM 50 //Angle where shifter is ready to pick up
 
-#define STACK_ANGLE 3700 //Angle where cone is directly above stack
+#define STACK_ANGLE 3000 //Angle where cone is directly above stack
 
 #define MIDDLE_ANGLE 2170 //Angle where cone is right above robot, waiting to stack
 
 #define CLEARANCE_ANGLE_BOTTOM 2000 //Angle that shifter has to get to before
                           //it is clear to go up
 
-#define CLEARANCE_ANGLE_TOP 2000 //Angle that shifter has to get to before
+#define CLEARANCE_ANGLE_TOP 3000 //Angle that shifter has to get to before
                           //it is clear to go back down
 
 #endif

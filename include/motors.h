@@ -4,11 +4,11 @@
 //Name motors
 
 //Drive Motors
-#define DRIVELEFT1 3
-#define DRIVELEFT2 4
+#define DRIVELEFT1 7
+#define DRIVELEFT2 8
 
-#define DRIVERIGHT1 7
-#define DRIVERIGHT2 8
+#define DRIVERIGHT1 3
+#define DRIVERIGHT2 4
 
 //Main Lift Motors
 #define MAINLIFT 5

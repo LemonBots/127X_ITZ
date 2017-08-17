@@ -8,6 +8,24 @@
 extern "C" {
 #endif
 
+uint8_t scoringMode = 0;	//0 is standard mobile goal stacking,
+											//1 is stationary goal stacking
+											//2 is complete manual control
+											//Accepts partner controller input
+
+uint8_t liftPlan = 0;		//0 indicates going down to pick up from ground;
+										//1 indicates going down to pick up from autoloader
+										//2 indicates going up to stack
+										//Does NOT accept partner controller input (backend)
+
+bool pickupMode = 0;  //0 indicates picking up from ground
+										//1 indicates picking up from autoloader
+										//Accepts partner controller input
+
+uint8_t stackedCones = 1; //Cones stacked on currently-selected mobile goal
+uint8_t stationaryCones = 0; //Cones stacked on stationary goal (only incremented)
+                    														//in stationary goal mode)
+
 // A function prototype looks exactly like its declaration, but with a semicolon instead of
 // actual code. If a function does not match a prototype, compile errors will occur.
 
